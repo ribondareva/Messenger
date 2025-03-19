@@ -25,9 +25,9 @@ from django.conf.urls.static import static
 # Создаем роутер для API
 router = DefaultRouter()
 router.register(r'users', views.UserViewSet)
-router.register(r'profile', views.ProfileViewSet, basename='profile')
+router.register(r'profiles', views.ProfileViewSet, basename='profile')
 router.register(r'messages', views.MessageViewSet, basename='message')
-router.register(r'chat', views.ChatViewSet, basename='chat')
+router.register(r'chats', views.ChatViewSet, basename='chat')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
