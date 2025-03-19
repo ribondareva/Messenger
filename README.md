@@ -39,19 +39,52 @@ ws://127.0.0.1:8000/ws/api/chat/<chat_id>/
 ```
 ### 6. Итоговое описание маршрутов:
 #### 1. Отправка и получение сообщений:
-##### Для отправки: POST /api/messages/
-##### Для получения: GET /api/messages/get_chat_messages/
+##### Для отправки: 
+```bash
+POST /api/messages/
+```
+##### Для получения:
+```bash
+GET /api/messages/get_chat_messages/
+```
 #### 2. Создание, редактирование и удаление групповых чатов:
-##### Для создания: POST /api/chats/
-##### Для редактирования: PUT /api/chats/<chat_id>/
-##### Для удаления: DELETE /api/chats/<chat_id>/
-##### Для получения чатов: GET /api/chats/
+##### Для создания: 
+```bash
+POST /api/chats/
+```
+##### Для редактирования: 
+```bash
+PUT /api/chats/<chat_id>/
+```
+##### Для удаления:
+```bash
+DELETE /api/chats/<chat_id>/
+```
+##### Для получения чатов: 
+```bash
+GET /api/chats/
+```
 #### 3. Переписка в чате через WebSocket:
-##### WebSocket /ws/api/chat/<chat_id>/
+##### WebSocket 
+```bash
+/ws/api/chat/<chat_id>/
+```
 #### 4. Редактирование личной информации:
-##### Для получения профиля: GET /api/profiles/current_user_profile/
-##### Для обновления профиля: PUT /api/profiles/update_profile/
+##### Для получения профиля: 
+```bash
+GET /api/profiles/current_user_profile/
+```
+##### Для обновления профиля: 
+```bash
+PUT /api/profiles/update_profile/
+```
 #### 5. Просмотр списка пользователей:
-##### Для просмотра списка: GET /api/users/get_users_list/
-##### Для отправки сообщения пользователю: POST /api/messages/
+##### Для просмотра списка:
+```bash
+GET /api/users/get_users_list/
+```
+##### Для отправки сообщения пользователю: 
+```bash
+POST /api/messages/
+```
 
