@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 32px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        .form-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Добро пожаловать в мессенджер!</h1>
+    <p>Выберите действие:</p>
+
+    {% if user.is_authenticated %}
+        <p>Вы вошли как {{ user.username }}</p>
+        <form action="{% url 'logout' %}" method="post" class="form-container">
+            {% csrf_token %}
+            <button type="submit" class="btn">Выйти</button>
+        </form>
+        <a href="/api/profile/" class="btn">Профили API</a>
+        <a href="/api/chat/" class="btn">Чаты API</a>
+    {% else %}
+        <a href="{% url 'login' %}" class="btn">Войти</a>
+        <a href="{% url 'register' %}" class="btn">Регистрация</a>
+    {% endif %}
+
+    <a href="/admin/" class="btn">Админка</a>
+</body>
+</html>

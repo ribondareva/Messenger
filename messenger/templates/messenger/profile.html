@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль</title>
+</head>
+<body>
+    <h1>Редактирование профиля</h1>
+    <form id="profileForm">
+        <label>Имя: <input type="text" id="username"></label><br>
+        <label>Аватар: <input type="file" id="avatar"></label><br>
+        <button type="submit">Сохранить</button>
+    </form>
+
+    <script>
+        async function loadProfile() {
+            const response = await fetch("/profile/");
+            const user = await response.json();
+            document.getElementById("username").value = user.username;
+        }
+
+        document.getElementById("profileForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append("username", document.getElementById("username").value);
+            formData.append("avatar", document.getElementById("avatar").files[0]);
+
+            await fetch("/profile/", {
+                method: "PUT",
+                body: formData
+            });
+
+            alert("Профиль обновлён!");
+        });
+
+        loadProfile();
+    </script>
+</body>
+</html>

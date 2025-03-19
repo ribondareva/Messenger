@@ -1,0 +1,40 @@
+<!-- chat.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чат</title>
+</head>
+<body>
+    <div id="chat-messages"></div>
+    <input id="chat-message-input" type="text" placeholder="Введите сообщение...">
+    <button id="send-message-button">Отправить</button>
+
+    <script>
+        const chatId = {{ chat_id }};  // chat_id передан из Django
+
+        const chatSocket = new WebSocket(
+            'ws://' + window.location.host + '/ws/chat/' + chatId + '/'  // подключение к WebSocket
+        );
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const message = data['message'];
+            const chatMessages = document.querySelector('#chat-messages');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message.content;
+            chatMessages.appendChild(messageElement);
+        };
+
+        document.querySelector('#send-message-button').onclick = function() {
+            const messageInput = document.querySelector('#chat-message-input');
+            const message = messageInput.value;
+            chatSocket.send(JSON.stringify({
+                'message': message
+            }));
+            messageInput.value = '';  // очищаем поле ввода
+        };
+    </script>
+</body>
+</html>

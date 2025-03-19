@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Пользователи</title>
+</head>
+<body>
+    <h1>Список пользователей</h1>
+    <ul id="userList"></ul>
+
+    <script>
+        async function fetchUsers() {
+            const response = await fetch("/users/");
+            const users = await response.json();
+            const userList = document.getElementById("userList");
+            users.forEach(user => {
+                userList.innerHTML += `<li>${user.username} <img src="${user.avatar}" width="50"></li>`;
+            });
+        }
+
+        fetchUsers();
+    </script>
+</body>
+</html>
