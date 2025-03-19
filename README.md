@@ -12,7 +12,7 @@
 ## Требования
 
 - Python 3.8+
-- Django 5.x
+- Django (DRF) 5.x
 - Django Channels
 
 
@@ -37,4 +37,21 @@ http://127.0.0.1:8000
 ```bash
 ws://127.0.0.1:8000/ws/api/chat/<chat_id>/
 ```
+### 6. Итоговое описание маршрутов:
+#### 1. Отправка и получение сообщений:
+##### Для отправки: POST /api/messages/
+##### Для получения: GET /api/messages/get_chat_messages/
+#### 2. Создание, редактирование и удаление групповых чатов:
+##### Для создания: POST /api/chats/
+##### Для редактирования: PUT /api/chats/<chat_id>/
+##### Для удаления: DELETE /api/chats/<chat_id>/
+##### Для получения чатов: GET /api/chats/
+#### 3. Переписка в чате через WebSocket:
+##### WebSocket /ws/api/chat/<chat_id>/
+#### 4. Редактирование личной информации:
+##### Для получения профиля: GET /api/profiles/current_user_profile/
+##### Для обновления профиля: PUT /api/profiles/update_profile/
+#### 5. Просмотр списка пользователей:
+##### Для просмотра списка: GET /api/users/get_users_list/
+##### Для отправки сообщения пользователю: POST /api/messages/
 
