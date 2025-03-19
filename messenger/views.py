@@ -37,6 +37,14 @@ def index(request):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=['get'])
+    def get_users_list(self, request):
+        # Получаем список всех пользователей, кроме текущего
+        users = User.objects.exclude(id=request.user.id)
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -82,6 +90,37 @@ class ChatViewSet(viewsets.ModelViewSet):
     serializer_class = ChatSerializer
     permission_classes = [IsAuthenticated]
 
+    def perform_create(self, serializer):
+        # Устанавливаем создателя чата автоматически
+        serializer.save(created_by=self.request.user)
+
+    @action(detail=True, methods=['delete'])
+    def delete_chat(self, request, pk=None):
+        try:
+            chat = self.get_object()
+            if chat.created_by != request.user:
+                raise PermissionDenied("Вы не можете удалить этот чат.")
+            chat.delete()
+            return Response({"detail": "Chat deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        except Chat.DoesNotExist:
+            return Response({"detail": "Chat not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=True, methods=['put'])
+    def update_chat(self, request, pk=None):
+        try:
+            chat = self.get_object()
+            if chat.created_by != request.user:
+                raise PermissionDenied("Вы не можете редактировать этот чат.")
+
+            # Обновляем название чата
+            serializer = ChatSerializer(chat, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Chat.DoesNotExist:
+            return Response({"detail": "Chat not found."}, status=status.HTTP_404_NOT_FOUND)
+
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
@@ -113,3 +152,33 @@ class MessageViewSet(viewsets.ModelViewSet):
         messages = Message.objects.filter(chat=chat)
         serializer = MessageSerializer(messages, many=True)
         return Response(serializer.data)
+
+    @action(detail=False, methods=['post'])
+    def send_message(self, request):
+        # Получаем данные из запроса
+        recipient_id = request.data.get('recipient_id')
+        message_text = request.data.get('message_text')
+
+        if not recipient_id or not message_text:
+            return Response({"detail": "Recipient ID and message text are required."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # Получаем получателя
+        recipient = User.objects.filter(id=recipient_id).first()
+        if not recipient:
+            return Response({"detail": "Recipient not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Создаем новый чат для отправки личных сообщений
+        chat, created = Chat.objects.get_or_create(
+            name=f"Chat between {request.user.username} and {recipient.username}")
+
+        # Создаем сообщение
+        message = Message.objects.create(
+            chat=chat,
+            user=request.user,
+            text=message_text
+        )
+
+        # Отправляем ответ с данным сообщением
+        serializer = MessageSerializer(message)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
