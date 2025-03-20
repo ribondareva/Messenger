@@ -21,7 +21,7 @@
 ### 1. Клонируйте репозиторий
 
 ```bash
-git clone https://github.com/yourusername/Messenger.git
+git clone https://github.com/ribondareva/Messenger.git
 cd Messenger
 ```
 ### 2. Установите зависимости из requirements.txt
